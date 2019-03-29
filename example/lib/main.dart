@@ -56,10 +56,10 @@ class _MyHomePageState extends State<MyHomePage> {
   });
 
   void _incrementCounter() {
-    validator.validate("param1", "");
-    validator.validate("param1", "sdfsf");
-    validator.validate("param1", "20");
-    validator.validate("param1", "5");
+    print(validator.validate("param1", ""));
+    print(validator.validate("param1", "sdfsf"));
+    print(validator.validate("param1", "20"));
+    print(validator.validate("param1", "5"));
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
