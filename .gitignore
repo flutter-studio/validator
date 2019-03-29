@@ -9,3 +9,8 @@ build/
 ios/.generated/
 ios/Flutter/Generated.xcconfig
 ios/Runner/GeneratedPluginRegistrant.*
+
+node_modules/
+
+package-lock.json
+yarn.lock
