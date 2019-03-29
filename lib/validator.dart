@@ -211,12 +211,12 @@ class RangeLength extends Rule {
   ValidResult validate(String value) {
     bool minBoolValue;
     bool maxBoolValue;
-    if (min.closed) {
+    if (min.closed == true) {
       minBoolValue = value.length >= min.value;
     } else {
       minBoolValue = value.length > min.value;
     }
-    if (max.closed) {
+    if (max.closed == true) {
       maxBoolValue = value.length <= max.value;
     } else {
       maxBoolValue = value.length < max.value;
@@ -239,12 +239,12 @@ class Range extends Rule {
   ValidResult validate(String value) {
     bool minBoolValue;
     bool maxBoolValue;
-    if (min.closed) {
+    if (min.closed == true) {
       minBoolValue = int.parse(value) >= min.value;
     } else {
       minBoolValue = int.parse(value) > min.value;
     }
-    if (max.closed) {
+    if (max.closed == true) {
       maxBoolValue = int.parse(value) <= max.value;
     } else {
       maxBoolValue = int.parse(value) < max.value;
