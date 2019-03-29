@@ -1,14 +1,30 @@
+English | [简体中文](./README_zh-CN.md)
+
 # validator
 
-A new Flutter package.
+<!--[![pub package](https://img.shields.io/pub/v/flutter_icons.svg)](https://pub.dartlang.org/packages/flutter_icons)-->
 
-## Getting Started
+A string or numeric validator for flutter
 
-This project is a starting point for a Dart
-[package](https://flutter.io/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
+<!--## Usage
+To use this plugin, add `flutter_icons` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).-->
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+## Example
+
+``` dart
+// Import package
+import 'package:validator/validator.dart';
+
+ Validator validator = Validator(rules: {
+    "param1": [
+      Required(message: "param1不能为空"),
+      Number(message: "param1必须是数字"),
+      Range(max: Section(value: 10), min: Section(value: 1), message: "param1必须在1到10之间")
+    ],
+  });
+   print(validator.validate("param1", "")); // ValidResult{ pass: false, message: param1不能为空, filteredMsg: param1不能为空 }
+   print(validator.validate("param1", "sdfsf")); // ValidResult{ pass: false, message: param1必须是数字, filteredMsg: param1必须是数字 }
+   print(validator.validate("param1", "20")); // ValidResult{ pass: false, message: param1必须在1到10之间, filteredMsg: param1必须在1到10之间 }
+   print(validator.validate("param1", "5")); // ValidResult{ pass: true, message: param1必须在1到10之间, filteredMsg:  }
+
+```
