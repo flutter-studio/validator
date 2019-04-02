@@ -30,7 +30,7 @@ class Required extends Rule {
   final String message;
 
   @override
-  ValidResult validate(dynamic value) => ValidResult(pass: value != "" && value != null, message: message);
+  ValidResult validate(String value) => ValidResult(pass: value != "" && value != null, message: message);
 }
 
 /// 邮箱验证
