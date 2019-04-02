@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:validator/validator.dart';
-
+import 'package:smart_validator/smart_validator.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
