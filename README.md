@@ -1,19 +1,19 @@
 English | [简体中文](./README_zh-CN.md)
 
-# validator
+# smart_validator
 
-<!--[![pub package](https://img.shields.io/pub/v/flutter_icons.svg)](https://pub.dartlang.org/packages/flutter_icons)-->
+[![pub package](https://img.shields.io/pub/v/smart_validator.svg)](https://pub.dartlang.org/packages/smart_validator)
 
 A string or numeric validator for flutter，Including email, phone and so on
 
-<!--## Usage
-To use this plugin, add `flutter_icons` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).-->
+## Usage
+To use this plugin, add `smart_validator` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
 
 ## Example
 
 ``` dart
 // Import package
-import 'package:validator/validator.dart';
+import 'package:smart_validator/smart_validator.dart';
 
  Validator validator = Validator(rules: {
     "param1": [
