@@ -187,6 +187,13 @@ class Section {
   
   final dynamic comparativeValue;
   final bool closed;
+
+  @override
+  String toString() {
+    return 'Section{comparativeValue: $comparativeValue, closed: $closed}';
+  }
+
+
 }
 
 /// 范围长度验证
