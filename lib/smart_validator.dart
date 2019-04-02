@@ -1,3 +1,4 @@
+export 'validator_tag.dart';
 abstract class Rule {
   ValidResult validate(String value);
 }
@@ -18,143 +19,141 @@ class ValidResult {
 }
 
 typedef StringCallback = String Function();
-typedef NumberCallback = double Function();
+typedef DoubleCallback = double Function();
 typedef IntCallback = int Function();
+
+_message(dynamic message){
+  if(message is String)return message;
+  if(message is StringCallback)return message();
+  throw "message does not provide any types other than String and StringCallback";
+}
+
+_comparativeValue(dynamic comparativeValue){
+  if(comparativeValue is int)return comparativeValue;
+  if(comparativeValue is double)return comparativeValue;
+  if(comparativeValue is DoubleCallback)return comparativeValue();
+  if(comparativeValue is IntCallback)return comparativeValue();
+  throw "comparativeValue do not provide types other than int, double, IntCallback, and NumberCallback";
+}
+
+
 
 ///必填验证
 class Required extends Rule {
   Required({this.message});
 
-  Required.func({StringCallback message}) : this(message: message());
+  final dynamic message;
 
-  final String message;
 
   @override
-  ValidResult validate(String value) => ValidResult(pass: value != "" && value != null, message: message);
+  ValidResult validate(String value) => ValidResult(pass: value != "" && value != null, message: _message(message));
 }
 
 /// 邮箱验证
 class Email extends Rule {
   Email({this.message});
 
-  Email.func({StringCallback message}) : this(message: message());
-
-  final String message;
+  final dynamic message;
 
   @override
-  ValidResult validate(value) => ValidResult(
+  ValidResult validate(String value) => ValidResult(
       pass: RegExp(r"^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
           .hasMatch(value),
-      message: message);
+      message: _message(message));
 }
 
 /// 数字验证,可包含小数点
 class Number extends Rule {
   Number({this.message});
 
-  Number.func({StringCallback message}) : this(message: message());
-  final String message;
+  final dynamic message;
 
   @override
-  ValidResult validate(value) => ValidResult(pass: RegExp(r"^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$").hasMatch(value), message: message);
+  ValidResult validate(String value) => ValidResult(pass: RegExp(r"^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$").hasMatch(value), message: _message(message));
 }
 
 /// 数字验证， 不带小数点
 class Digit extends Rule {
   Digit({this.message});
 
-  Digit.func({StringCallback message}) : this(message: message());
-
-  final String message;
+  final dynamic message;
 
   @override
-  ValidResult validate(value) => ValidResult(pass: RegExp(r"^\d+$").hasMatch(value), message: message);
+  ValidResult validate(String value) => ValidResult(pass: RegExp(r"^\d+$").hasMatch(value), message: _message(message));
 }
 
 /// qq验证
 class QQ extends Rule {
   QQ({this.message});
 
-  QQ.func({StringCallback message}) : this(message: message());
-
-  final String message;
+  final dynamic message;
 
   @override
-  ValidResult validate(value) => ValidResult(pass: RegExp(r"^[1-9][0-9]{4,14}$").hasMatch(value), message: message);
+  ValidResult validate(String value) => ValidResult(pass: RegExp(r"^[1-9][0-9]{4,14}$").hasMatch(value), message: _message(message));
 }
 
 /// 手机号验证
 class Mobile extends Rule {
   Mobile({this.message});
 
-  Mobile.func({StringCallback message}) : this(message: message());
-
-  final String message;
+  final dynamic message;
 
   @override
-  ValidResult validate(value) => ValidResult(pass: RegExp(r"^((1)+\d{10})$").hasMatch(value) && value.length == 11, message: message);
+  ValidResult validate(String value) => ValidResult(pass: RegExp(r"^((1)+\d{10})$").hasMatch(value) && value.length == 11, message: _message(message));
 }
 
 /// 电话号码验证
 class Phone extends Rule {
   Phone({this.message});
 
-  Phone.func({StringCallback message}) : this(message: message());
-
-  final String message;
+  final dynamic message;
 
   @override
-  ValidResult validate(value) => ValidResult(
+  ValidResult validate(String value) => ValidResult(
       pass:
           RegExp(r"^((\d{10,11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)$")
               .hasMatch(value),
-      message: message);
+      message: _message(message));
 }
 
 /// 非法字符验证
 class IllegalChar extends Rule {
   IllegalChar({this.message});
 
-  IllegalChar.func({StringCallback message}) : this(message: message());
-
-  final String message;
+  final dynamic message;
 
   @override
-  ValidResult validate(value) => ValidResult(pass: RegExp(r"""/[&\\<>'"]""").hasMatch(value) && value.length == 11, message: message);
+  ValidResult validate(String value) => ValidResult(pass: RegExp(r"""/[&\\<>'"]""").hasMatch(value) && value.length == 11, message: _message(message));
 }
 
 /// 邮编验证
 class PostCode extends Rule {
   PostCode({this.message});
 
-  PostCode.func({StringCallback message}) : this(message: message());
-
-  final String message;
+  final dynamic message;
 
   @override
-  ValidResult validate(value) => ValidResult(pass: RegExp(r"^[0-9]{6}$").hasMatch(value) && value.length == 11, message: message);
+  ValidResult validate(String value) => ValidResult(pass: RegExp(r"^[0-9]{6}$").hasMatch(value) && value.length == 11, message: _message(message));
 }
 
 /// 中文和字母
 class ChineseLetter extends Rule {
   ChineseLetter({this.message});
 
-  ChineseLetter.func({StringCallback message}) : this(message: message());
-  final String message;
+  final dynamic message;
 
   @override
-  ValidResult validate(String value) => ValidResult(pass: RegExp(r"^([\u4e00-\u9fa5]|[a-zA-Z])*$").hasMatch(value), message: message);
+  ValidResult validate(String value) => ValidResult(pass: RegExp(r"^([\u4e00-\u9fa5]|[a-zA-Z])*$").hasMatch(value), message: _message(message));
 }
 
 /// 数字字符串验证
 class NumberLetter extends Rule{
   NumberLetter({this.message});
-  
-  NumberLetter.func({StringCallback message}):this(message: message());
-  final String message;
+
+  final dynamic message;
   
   @override
-  ValidResult validate(String value)=>ValidResult(pass: RegExp(r"^([0-9]|[a-zA-Z])*$").hasMatch(value) ,message: message);
+  ValidResult validate(String value)=>ValidResult(pass: RegExp(r"^([0-9]|[a-zA-Z])*$").hasMatch(value) ,message: _message(message));
   
 }
 
@@ -162,49 +161,40 @@ class NumberLetter extends Rule{
 class MinLength extends Rule {
   MinLength({this.comparativeValue, this.message, this.closed = true});
 
-  MinLength.func({IntCallback comparativeValue, StringCallback message, bool closed})
-      : this(comparativeValue: comparativeValue(), message: message(), closed: closed);
-
   final int comparativeValue;
-  final String message;
+  final dynamic message;
   final bool closed;
 
   @override
-  ValidResult validate(value) => ValidResult(pass: closed == true ? value.length >= comparativeValue : value.length > comparativeValue, message: message);
+  ValidResult validate(value) => ValidResult(pass: closed == true ? value.length >= _comparativeValue(comparativeValue) : value.length > _comparativeValue(comparativeValue), message: _message(message));
 }
 
 /// 最大长度验证
 class MaxLength extends Rule {
   MaxLength({this.comparativeValue, this.message, this.closed = true});
 
-  MaxLength.func({IntCallback comparativeValue, StringCallback message, bool closed})
-      : this(comparativeValue: comparativeValue(), message: message(), closed: closed);
 
   final int comparativeValue;
-  final String message;
+  final dynamic message;
   final bool closed;
 
   @override
-  ValidResult validate(value) => ValidResult(pass: closed == true ? value.length <= comparativeValue : value.length < comparativeValue, message: message);
+  ValidResult validate(String value) => ValidResult(pass: closed == true ? value.length <= _comparativeValue(comparativeValue) : value.length < _comparativeValue(comparativeValue), message: _message(message));
 }
 
 class Section {
-  Section({this.value, this.closed});
-
-  Section.func({NumberCallback value, bool closed}) : this(value: value(), closed: closed);
-
-  final double value;
+  Section({this.comparativeValue, this.closed});
+  
+  final dynamic comparativeValue;
   final bool closed;
 }
 
 /// 范围长度验证
 class RangeLength extends Rule {
   RangeLength({this.min, this.max, this.message});
-
-  RangeLength.func({Section min, Section max, StringCallback message}) : this(min: min, max: max, message: message());
-
+  
   final Section min;
-  final String message;
+  final dynamic message;
   final Section max;
 
   @override
@@ -212,27 +202,25 @@ class RangeLength extends Rule {
     bool minBoolValue;
     bool maxBoolValue;
     if (min.closed == true) {
-      minBoolValue = value.length >= min.value;
+      minBoolValue = value.length >= _comparativeValue(min.comparativeValue);
     } else {
-      minBoolValue = value.length > min.value;
+      minBoolValue = value.length > _comparativeValue(min.comparativeValue);
     }
     if (max.closed == true) {
-      maxBoolValue = value.length <= max.value;
+      maxBoolValue = value.length <= _comparativeValue(max.comparativeValue);
     } else {
-      maxBoolValue = value.length < max.value;
+      maxBoolValue = value.length < _comparativeValue(max.comparativeValue);
     }
-    return ValidResult(pass: minBoolValue == true && maxBoolValue == true, message: message);
+    return ValidResult(pass: minBoolValue == true && maxBoolValue == true, message: _message(message));
   }
 }
 
 /// 范围验证
 class Range extends Rule {
   Range({this.min, this.max, this.message});
-
-  Range.func({Section min, Section max, StringCallback message}) : this(min: min, max: max, message: message());
-
+  
   final Section min;
-  final String message;
+  final dynamic message;
   final Section max;
 
   @override
@@ -240,49 +228,44 @@ class Range extends Rule {
     bool minBoolValue;
     bool maxBoolValue;
     if (min.closed == true) {
-      minBoolValue = int.parse(value) >= min.value;
+      minBoolValue = int.parse(value) >= _comparativeValue(min.comparativeValue);
     } else {
-      minBoolValue = int.parse(value) > min.value;
+      minBoolValue = int.parse(value) > _comparativeValue(min.comparativeValue);
     }
     if (max.closed == true) {
-      maxBoolValue = int.parse(value) <= max.value;
+      maxBoolValue = int.parse(value) <= _comparativeValue(max.comparativeValue);
     } else {
-      maxBoolValue = int.parse(value) < max.value;
+      maxBoolValue = int.parse(value) < _comparativeValue(max.comparativeValue);
     }
-    return ValidResult(pass: minBoolValue == true && maxBoolValue == true, message: message);
+    return ValidResult(pass: minBoolValue == true && maxBoolValue == true, message: _message(message));
   }
 }
 
 /// 最小值验证
 class Min extends Rule {
   Min({this.comparativeValue, this.message, this.closed = true});
-
-  Min.func({NumberCallback comparativeValue, StringCallback message, bool closed})
-      : this(comparativeValue: comparativeValue(), message: message(), closed: closed);
-
-  final double comparativeValue;
-  final String message;
+  
+  final dynamic comparativeValue;
+  final dynamic message;
   final bool closed;
 
   @override
   ValidResult validate(value) =>
-      ValidResult(pass: closed == true ? double.parse(value) >= comparativeValue : double.parse(value) > comparativeValue, message: message);
+      ValidResult(pass: closed == true ? double.parse(value) >= _comparativeValue(comparativeValue) : double.parse(value) > _comparativeValue(comparativeValue), message: _message(message));
 }
 
 /// 最大值验证
 class Max extends Rule {
   Max({this.comparativeValue, this.message, this.closed = true});
 
-  Max.func({NumberCallback comparativeValue, StringCallback message, bool closed})
-      : this(comparativeValue: comparativeValue(), message: message(), closed: closed);
-
-  final double comparativeValue;
-  final String message;
+  
+  final dynamic comparativeValue;
+  final dynamic message;
   final bool closed;
 
   @override
   ValidResult validate(value) =>
-      ValidResult(pass: closed == true ? double.parse(value) <= comparativeValue : double.parse(value) < comparativeValue, message: message);
+      ValidResult(pass: closed == true ? double.parse(value) <= _comparativeValue(comparativeValue) : double.parse(value) < _comparativeValue(comparativeValue), message: _message(message));
 }
 
 ///    验证器
