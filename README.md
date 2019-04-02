@@ -17,9 +17,10 @@ import 'package:smart_validator/smart_validator.dart';
 
  Validator validator = Validator(rules: {
     "param1": [
-      Required(message: "param1不能为空"),
-      Number(message: "param1必须是数字"),
+      Required(message: "param1不能为空"), /// or  Required(message: ()=>"param1不能为空")
+      Number(message: "param1必须是数字"), /// or  Number(message: ()=>"param1必须是数字")
       Range(max: Section(value: 10), min: Section(value: 1), message: "param1必须在1到10之间")
+      /// or  Range(max: Section(value: ()=>10), min: Section(value: ()=>1), message: "param1必须在1到10之间")
     ],
   });
 
