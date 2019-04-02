@@ -1,19 +1,19 @@
 [English](./README.md) | 简体中文
 
-# validator
+# smart_validator
 
-<!--[![pub package](https://img.shields.io/pub/v/flutter_icons.svg)](https://pub.dartlang.org/packages/flutter_icons)-->
+[![pub package](https://img.shields.io/pub/v/smart_validator.svg)](https://pub.dartlang.org/packages/smart_validator)
 
 一个用于验证字符串和数字的flutter插件包，包括邮箱、手机等等
 
-<!--## Usage
-To use this plugin, add `flutter_icons` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).-->
+## Usage
+To use this plugin, add `smart_validator` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
 
 ## 示例
 
 ``` dart
 // 引入包
-import 'package:validator/validator.dart';
+import 'package:smart_validator/smart_validator.dart';
 
  Validator validator = Validator(rules: {
     "param1": [
