@@ -1,4 +1,8 @@
 export 'validator_tag.dart';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
 abstract class Rule {
   ValidResult validate(String value);
 }
@@ -10,7 +14,7 @@ class ValidResult {
   final bool pass;
   final String message;
 
-  get filteredMsg => pass == true ? "" : message;
+  String get filteredMsg => pass ? "" : message;
 
   @override
   String toString() {
@@ -18,25 +22,21 @@ class ValidResult {
   }
 }
 
-typedef StringCallback = String Function();
-typedef DoubleCallback = double Function();
 typedef IntCallback = int Function();
 
-_message(dynamic message){
-  if(message is String)return message;
-  if(message is StringCallback)return message();
-  throw "message does not provide any types other than String and StringCallback";
+typedef ValueCallback<T> = T Function();
+
+_message(dynamic message) {
+  if (message is String) return message;
+  if (message is ValueCallback<String>) return message();
+  throw "message does not provide any types other than String and ValueCallback<String>";
 }
 
-_comparativeValue(dynamic comparativeValue){
-  if(comparativeValue is int)return comparativeValue;
-  if(comparativeValue is double)return comparativeValue;
-  if(comparativeValue is DoubleCallback)return comparativeValue();
-  if(comparativeValue is IntCallback)return comparativeValue();
-  throw "comparativeValue do not provide types other than int, double, IntCallback, and NumberCallback";
+_comparativeValue<T>(dynamic value) {
+  if (value is ValueCallback<T>) return value();
+  if (value is T) return value;
+  throw "value does not provide any types other than $T and ValueCallback<$T>";
 }
-
-
 
 ///必填验证
 class Required extends Rule {
@@ -44,9 +44,9 @@ class Required extends Rule {
 
   final dynamic message;
 
-
   @override
-  ValidResult validate(String value) => ValidResult(pass: value != "" && value != null, message: _message(message));
+  ValidResult validate(String value) => ValidResult(
+      pass: value != "" && value != null, message: _message(message));
 }
 
 /// 邮箱验证
@@ -57,7 +57,8 @@ class Email extends Rule {
 
   @override
   ValidResult validate(String value) => ValidResult(
-      pass: RegExp(r"^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+      pass: RegExp(
+              r"^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
           .hasMatch(value),
       message: _message(message));
 }
@@ -69,7 +70,10 @@ class Number extends Rule {
   final dynamic message;
 
   @override
-  ValidResult validate(String value) => ValidResult(pass: RegExp(r"^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$").hasMatch(value), message: _message(message));
+  ValidResult validate(String value) => ValidResult(
+      pass: RegExp(r"^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$")
+          .hasMatch(value),
+      message: _message(message));
 }
 
 /// 数字验证， 不带小数点
@@ -79,7 +83,8 @@ class Digit extends Rule {
   final dynamic message;
 
   @override
-  ValidResult validate(String value) => ValidResult(pass: RegExp(r"^\d+$").hasMatch(value), message: _message(message));
+  ValidResult validate(String value) => ValidResult(
+      pass: RegExp(r"^\d+$").hasMatch(value), message: _message(message));
 }
 
 /// qq验证
@@ -89,7 +94,9 @@ class QQ extends Rule {
   final dynamic message;
 
   @override
-  ValidResult validate(String value) => ValidResult(pass: RegExp(r"^[1-9][0-9]{4,14}$").hasMatch(value), message: _message(message));
+  ValidResult validate(String value) => ValidResult(
+      pass: RegExp(r"^[1-9][0-9]{4,14}$").hasMatch(value),
+      message: _message(message));
 }
 
 /// 手机号验证
@@ -99,7 +106,9 @@ class Mobile extends Rule {
   final dynamic message;
 
   @override
-  ValidResult validate(String value) => ValidResult(pass: RegExp(r"^((1)+\d{10})$").hasMatch(value) && value.length == 11, message: _message(message));
+  ValidResult validate(String value) => ValidResult(
+      pass: RegExp(r"^((1)+\d{10})$").hasMatch(value) && value.length == 11,
+      message: _message(message));
 }
 
 /// 电话号码验证
@@ -110,9 +119,9 @@ class Phone extends Rule {
 
   @override
   ValidResult validate(String value) => ValidResult(
-      pass:
-          RegExp(r"^((\d{10,11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)$")
-              .hasMatch(value),
+      pass: RegExp(
+              r"^((\d{10,11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)$")
+          .hasMatch(value),
       message: _message(message));
 }
 
@@ -123,7 +132,9 @@ class IllegalChar extends Rule {
   final dynamic message;
 
   @override
-  ValidResult validate(String value) => ValidResult(pass: RegExp(r"""/[&\\<>'"]""").hasMatch(value) && value.length == 11, message: _message(message));
+  ValidResult validate(String value) => ValidResult(
+      pass: RegExp(r"""/[&\\<>'"]""").hasMatch(value) && value.length == 11,
+      message: _message(message));
 }
 
 /// 邮编验证
@@ -133,7 +144,9 @@ class PostCode extends Rule {
   final dynamic message;
 
   @override
-  ValidResult validate(String value) => ValidResult(pass: RegExp(r"^[0-9]{6}$").hasMatch(value) && value.length == 11, message: _message(message));
+  ValidResult validate(String value) => ValidResult(
+      pass: RegExp(r"^[0-9]{6}$").hasMatch(value) && value.length == 11,
+      message: _message(message));
 }
 
 /// 中文和字母
@@ -143,63 +156,71 @@ class ChineseLetter extends Rule {
   final dynamic message;
 
   @override
-  ValidResult validate(String value) => ValidResult(pass: RegExp(r"^([\u4e00-\u9fa5]|[a-zA-Z])*$").hasMatch(value), message: _message(message));
+  ValidResult validate(String value) => ValidResult(
+      pass: RegExp(r"^([\u4e00-\u9fa5]|[a-zA-Z])*$").hasMatch(value),
+      message: _message(message));
 }
 
 /// 数字字符串验证
-class NumberLetter extends Rule{
+class NumberLetter extends Rule {
   NumberLetter({this.message});
 
   final dynamic message;
-  
+
   @override
-  ValidResult validate(String value)=>ValidResult(pass: RegExp(r"^([0-9]|[a-zA-Z])*$").hasMatch(value) ,message: _message(message));
-  
+  ValidResult validate(String value) => ValidResult(
+      pass: RegExp(r"^([0-9]|[a-zA-Z])*$").hasMatch(value),
+      message: _message(message));
 }
 
 /// 最小长度验证
 class MinLength extends Rule {
-  MinLength({this.comparativeValue, this.message, this.closed = true});
+  MinLength({dynamic value, this.message, this.closed = true}) : _value = value;
 
-  final int comparativeValue;
+  final dynamic _value;
   final dynamic message;
   final bool closed;
 
   @override
-  ValidResult validate(value) => ValidResult(pass: closed == true ? value.length >= _comparativeValue(comparativeValue) : value.length > _comparativeValue(comparativeValue), message: _message(message));
+  ValidResult validate(value) => ValidResult(
+      pass: closed == true
+          ? value.length >= _comparativeValue<int>(_value)
+          : value.length > _comparativeValue<int>(_value),
+      message: _message(message));
 }
 
 /// 最大长度验证
 class MaxLength extends Rule {
-  MaxLength({this.comparativeValue, this.message, this.closed = true});
+  MaxLength({dynamic value, this.message, this.closed = true}) : _value = value;
 
-
-  final int comparativeValue;
+  final dynamic _value;
   final dynamic message;
   final bool closed;
 
   @override
-  ValidResult validate(String value) => ValidResult(pass: closed == true ? value.length <= _comparativeValue(comparativeValue) : value.length < _comparativeValue(comparativeValue), message: _message(message));
+  ValidResult validate(String value) => ValidResult(
+      pass: closed == true
+          ? value.length <= _comparativeValue<int>(_value)
+          : value.length < _comparativeValue<int>(_value),
+      message: _message(message));
 }
 
 class Section {
-  Section({this.comparativeValue, this.closed});
-  
-  final dynamic comparativeValue;
+  Section({this.value, this.closed});
+
+  final dynamic value;
   final bool closed;
 
   @override
   String toString() {
-    return 'Section{comparativeValue: $comparativeValue, closed: $closed}';
+    return 'Section{value: $value, closed: $closed}';
   }
-
-
 }
 
 /// 范围长度验证
 class RangeLength extends Rule {
   RangeLength({this.min, this.max, this.message});
-  
+
   final Section min;
   final dynamic message;
   final Section max;
@@ -209,23 +230,25 @@ class RangeLength extends Rule {
     bool minBoolValue;
     bool maxBoolValue;
     if (min.closed == true) {
-      minBoolValue = value.length >= _comparativeValue(min.comparativeValue);
+      minBoolValue = value.length >= _comparativeValue<int>(min.value);
     } else {
-      minBoolValue = value.length > _comparativeValue(min.comparativeValue);
+      minBoolValue = value.length > _comparativeValue<int>(min.value);
     }
     if (max.closed == true) {
-      maxBoolValue = value.length <= _comparativeValue(max.comparativeValue);
+      maxBoolValue = value.length <= _comparativeValue<int>(max.value);
     } else {
-      maxBoolValue = value.length < _comparativeValue(max.comparativeValue);
+      maxBoolValue = value.length < _comparativeValue<int>(max.value);
     }
-    return ValidResult(pass: minBoolValue == true && maxBoolValue == true, message: _message(message));
+    return ValidResult(
+        pass: minBoolValue == true && maxBoolValue == true,
+        message: _message(message));
   }
 }
 
 /// 范围验证
 class Range extends Rule {
   Range({this.min, this.max, this.message});
-  
+
   final Section min;
   final dynamic message;
   final Section max;
@@ -235,44 +258,51 @@ class Range extends Rule {
     bool minBoolValue;
     bool maxBoolValue;
     if (min.closed == true) {
-      minBoolValue = int.parse(value) >= _comparativeValue(min.comparativeValue);
+      minBoolValue = num.parse(value) >= _comparativeValue<num>(min.value);
     } else {
-      minBoolValue = int.parse(value) > _comparativeValue(min.comparativeValue);
+      minBoolValue = num.parse(value) > _comparativeValue<num>(min.value);
     }
     if (max.closed == true) {
-      maxBoolValue = int.parse(value) <= _comparativeValue(max.comparativeValue);
+      maxBoolValue = num.parse(value) <= _comparativeValue<num>(max.value);
     } else {
-      maxBoolValue = int.parse(value) < _comparativeValue(max.comparativeValue);
+      maxBoolValue = num.parse(value) < _comparativeValue<num>(max.value);
     }
-    return ValidResult(pass: minBoolValue == true && maxBoolValue == true, message: _message(message));
+    return ValidResult(
+        pass: minBoolValue == true && maxBoolValue == true,
+        message: _message(message));
   }
 }
 
 /// 最小值验证
 class Min extends Rule {
-  Min({this.comparativeValue, this.message, this.closed = true});
-  
-  final dynamic comparativeValue;
+  Min({dynamic value, this.message, this.closed = true}) : _value = value;
+
+  final dynamic _value;
   final dynamic message;
   final bool closed;
 
   @override
-  ValidResult validate(value) =>
-      ValidResult(pass: closed == true ? double.parse(value) >= _comparativeValue(comparativeValue) : double.parse(value) > _comparativeValue(comparativeValue), message: _message(message));
+  ValidResult validate(value) => ValidResult(
+      pass: closed == true
+          ? num.parse(value) >= _comparativeValue<num>(value)
+          : num.parse(value) > _comparativeValue<num>(value),
+      message: _message(message));
 }
 
 /// 最大值验证
 class Max extends Rule {
-  Max({this.comparativeValue, this.message, this.closed = true});
+  Max({dynamic value, this.message, this.closed = true}) : _value = value;
 
-  
-  final dynamic comparativeValue;
+  final dynamic _value;
   final dynamic message;
   final bool closed;
 
   @override
-  ValidResult validate(value) =>
-      ValidResult(pass: closed == true ? double.parse(value) <= _comparativeValue(comparativeValue) : double.parse(value) < _comparativeValue(comparativeValue), message: _message(message));
+  ValidResult validate(value) => ValidResult(
+      pass: closed == true
+          ? num.parse(value) <= _comparativeValue<num>(value)
+          : num.parse(value) < _comparativeValue<num>(value),
+      message: _message(message));
 }
 
 ///    验证器
@@ -284,13 +314,28 @@ class Max extends Rule {
 ///
 ///   validator.validate("name",123)
 ///
+///   *************************
+///
+///   在flutter中使用此插件可以快速对[TextFormField]进行验证
+///
+///   TextFormField(validator: (validator..key = "name").validateFormField)
+///
 class Validator {
   Validator({this.rules, this.options = const {}});
 
   final Map<String, List<Rule>> rules;
   final Map<String, dynamic> options;
-  
-  addRules(Map<String,List<Rule>> rules)=>rules.addAll(rules);
+  String _textFieldKey;
+
+  set key(String value) => _textFieldKey = value;
+
+  /// 用于在Flutter[TextFormField]的验证
+  String validateFormField(String value) {
+    ValidResult result = validate(_textFieldKey, value);
+    return result.pass ? null : result.filteredMsg;
+  }
+
+  addRules(Map<String, List<Rule>> rules) => rules.addAll(rules);
 
   ValidResult validate(dynamic key, dynamic value) {
     ValidResult validResult;

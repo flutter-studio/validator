@@ -1,6 +1,6 @@
 name: smart_validator
 description: A string or numeric validator for flutter，Including email, phone and so on
-version: 0.0.5
+version: 0.1.0
 author: flutter-studio<2534290808@qq.com>
 homepage: https://github.com/flutter-studio/validator
 
