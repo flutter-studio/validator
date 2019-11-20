@@ -43,6 +43,7 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   bool pass = true;
@@ -51,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
     "param1": [
       Required(message: "param1不能为空"),
       Number(message: "param1必须是数字"),
-      Range(max: Section(value: 10), min: Section(value: 1), message: "param1必须在1到10之间")
+      Range(max: Section(value: ()=>10), min: Section(value: ()=>1), message: "param1必须在1到10之间")
     ],
   });
 
@@ -104,7 +105,8 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-           ValidatorTag(pass: pass,message: "sdfsfsdfdsfsdf",)
+           ValidatorTag(pass: pass,message: "sdfsfsdfdsfsdf",),
+            TextFormField(validator: (validator..key = "name").validateFormField,),
           ],
         ),
       ),
